@@ -2,12 +2,10 @@
 title: API Reference
 
 language_tabs:
-  - shell
-  - ruby
-  - python
+  - javascript
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
+  - <a href='#'>Sign Up for RingCentral for Developers</a>
   - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
 
 includes:
@@ -18,151 +16,478 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the RingCentral CTI Developer Tutorial. This tutorial uses the [RingCentral JavaScript SDK](http://github.com/ringcentral/js-sdk).
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+Call management integration typically includes monitoring of incoming calls, listing calls and performing of RingOuts, all of which are covered in this tutorial.
 
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+# Getting Started
 
-# Authentication
+## Installing the SDK
 
-> To authorize, use this code:
+To install the SDK, follow the online instructions posted at Github:
 
-```ruby
-require 'kittn'
+[https://github.com/ringcentral/js-sdk#installation](https://github.com/ringcentral/js-sdk#installation)
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+## Instantiating the SDK
+
+```javascript
+var RC_SERVER_PRODUCTION = 'https://platform.ringcentral.com';
+var RC_SERVER_SANDBOX = 'https://platform.devtest.ringcentral.com';
+
+var rcsdk = new RCSDK({
+    server: RC_SERVER_SANDBOX,
+    appKey: 'yourAppKey',
+    appSecret: 'yourAppSecret'
+});
 ```
 
-```python
-import kittn
+The SDK is represented by the global RCSDK constructor. Your application must create an instance of this object.
 
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+In order to bootstrap the RingCentral JavaScript SDK, you have to first get a reference to the Platform singleton and then configure it. Before you can do anything using the Platform singleton, you need to configure it with the server URL (this tells the SDK which server to connect to) and your unique API key (this is provided by RingCentral’s developer relations team).
 
 <aside class="notice">
-You must replace `meowmeowmeow` with your personal API key.
+This instance will be used later on to perform calls to API.
 </aside>
 
-# Kittens
+## Getting the Platform Singleton
 
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
+```javascript
+var platform = rcsdk.getPlatform();
 ```
 
-```python
-import kittn
+Now that you have your platform singleton and SDK has been configured with the correct server URL and API key, your application can log in so that it can access the features of the API.
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
+## Login
+
+```javascript
+platform.authorize({
+    username: '+18001234567', // your phone number in E.164 format
+    extension: '101', // leave blank if direct number is used
+    password: 'yourpassword'
+}).then(function(ajax) {
+    // your code here
+}).catch(function(e) {
+    alert(e.message  || 'Server cannot authorize user');
+});
 ```
 
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+To log in to RingCentral, get the Platform object and call its authorize method, providing valid username, extension, and password values. Enter your phone number in E.164 format for username. The `+` may be omitted.
+
+A Promise is returned, and you can use its then method to specify your continuation function, and its catch method to specify an error handling function.
+
+## Handling Authn Exceptions
+
+```javascript
+platform.on(platform.events.accessViolation, function(e){
+    // do something
+});
 ```
 
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+To handle possible access or authentication exceptions that may occur while the application is running (after the user has successfully logged in), you can provide a handler for the `accessViolation` platform event.
 
 <aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+A recommended way to handle access or authentication exceptions is to direct the user to the login page or UI. The login page may attempt to automatically re-authenticate the user using stored authentication data (see below).
 </aside>
 
-## Get a Specific Kitten
+## Determining Authn Status
 
-```ruby
-require 'kittn'
+```javascript
+// To check authentication status:
+platform.isAuthorized()
+    .then(function(){ ... })
+    .catch(function(e){ ... });
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
+// Checking authn status synchronously
+// without auto-refresh of the access token
+if (platform.isTokenValid()) {...}
 ```
 
-```python
-import kittn
+The `isAuthorized` method will automatically perform a refresh of the access token, if needed. This method may be used in the login page of your application for automatic login.
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
+There is also a synchronous method for checking the authentication status that does not automatically perform a refresh of the access token.
+
+## Manual Access Token Refresh
+
+```javascript
+// Refreshing the access token manually
+platform.refresh().then(...)
 ```
 
-```shell
-curl "http://example.com/api/kittens/3"
-  -H "Authorization: meowmeowmeow"
+Access token refresh normally happens automatically for common use cases. On rare occasions, you may perform a refresh of the access token manually by calling the refresh method using the `platform.refresh()` method.
+
+## Logout
+
+```javascript
+// without callback
+platform.logout()
+// with callback
+platform.logout().then(...)
 ```
 
-> The above command returns JSON structured like this:
+Your application can log out the user by calling the `platform.logout()` method.
 
-```json
+# Call Management
+
+If you are integrating with a CRM or ERP system, use of the JavaScript SDK is highly recommended. Following is an example of a call management integration that includes monitoring of incoming calls and performing of RingOuts.
+
+A call management integration usually consists of the following tasks:
+
+* Track the telephony status
+* View the list of active calls
+* View the recent calls
+
+## Call States
+
+```javascript
+
+// 1) Missed inbound call  (Ringing -> No Call)
 {
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "body": {
+    "telephonyStatus": "Ringing",
+                    "extensionId": 607457016,
+                    "activeCalls": [{"direction": "Inbound", "from": "13027430863", "telephonyStatus": "Ringing", "to":   "18885434778", "sessionId": "67029198021", "id": "8ad4d5ea165f4e2aa00474a666368728"}],
+    "sequence": 133702
+  },
+  "timestamp": "2015-04-10T18:48:55.133+0000",
+  "uuid": "2b5bb8c0-c36c-46af-bd93-fb41e330d87c",
+  "event": "/restapi/v1.0/account/~/extension/607457016/presence?detailedTelephonyState=true"
+}
+ 
+{
+  "body": {
+    "telephonyStatus": "NoCall",
+    "extensionId": 607457016,
+    "activeCalls": [{"direction": "Inbound", "from": "13027430863", "telephonyStatus": "NoCall", "to": "18885434778", "sessionId": "67029198021", "id": "8ad4d5ea165f4e2aa00474a666368728"}],
+    "sequence": 133857
+  },
+  "timestamp": "2015-04-10T18:49:14.679+0000",
+  "uuid": "a5a876ab-3356-41e5-b1fe-fff91da3a281",
+  "event": "/restapi/v1.0/account/~/extension/607457016/presence?detailedTelephonyState=true"
+}
+
+// 2) Answered inbound call (Ringing -> CallConnected -> NoCall)
+ 
+{
+  "body": {
+    "telephonyStatus": "Ringing",
+    "extensionId": 607457016,
+    "activeCalls": [{"direction": "Inbound", "from": "13027430863", "telephonyStatus": "Ringing", "to": "18885434778", "sessionId": "67029198021", "id": "61803278cbf74d7490539a6174a6c094"}],
+    "sequence": 133897
+  },
+  "timestamp": "2015-04-10T18:49:20.858+0000",
+  "uuid": "c394ccf6-85dd-4da4-a87e-d31fac7f1283",
+  "event": "/restapi/v1.0/account/~/extension/607457016/presence?detailedTelephonyState=true"
+}
+ 
+{
+  "body": {
+    "telephonyStatus": "CallConnected",
+    "extensionId": 607457016,
+    "activeCalls": [{"direction": "Inbound", "from": "13027430863", "telephonyStatus": "CallConnected", "to": "18885434778", "sessionId": "67029198021", "id": "61803278cbf74d7490539a6174a6c094"}],
+    "sequence": 133942
+  },
+  "timestamp": "2015-04-10T18:49:26.687+0000",
+  "uuid": "96df6fdd-a2a4-42fb-bc34-cffb5d637754",
+  "event": "/restapi/v1.0/account/~/extension/607457016/presence?detailedTelephonyState=true"
+}
+ 
+{
+  "body": {
+    "telephonyStatus": "NoCall",
+    "extensionId": 607457016,
+    "activeCalls": [{"direction": "Inbound", "from": "13027430863", "telephonyStatus": "NoCall", "to": "", "sessionId": "67029198021", "id": "61803278cbf74d7490539a6174a6c094"}],
+  "sequence": 134051
+  },
+  "timestamp": "2015-04-10T18:49:41.828+0000",
+  "uuid": "7fa7ac3c-5b7b-4127-88ec-9734f478d4a3",
+  "event": "/restapi/v1.0/account/~/extension/607457016/presence?detailedTelephonyState=true"
+}
+
+// 3) 2-legged Ringout
+{
+  "body": {
+    "telephonyStatus": "Ringing",
+    "extensionId": 255537016,
+"activeCalls": [{"to": "16502008440", "direction": "Outbound", "from": "16509540334", "sessionId": "915021981016", "telephonyStatus": "Ringing"}],
+    "sequence": 46061598
+  },
+  "timestamp": "2015-04-17T19:38:59.718+0000",
+  "uuid": "305b8075-5dad-4686-b22a-d26744802566", "event": "/restapi/v1.0/account/~/extension/255537016/presence?detailedTelephonyState=true"
+}
+ 
+{
+  "body": {
+    "telephonyStatus": "CallConnected",
+    "extensionId": 255537016,
+    "activeCalls": [{"direction": "Outbound", "from": "16509540334", "telephonyStatus": "CallConnected", "to": "16502008440", "sessionId": "915021981016", "id": "b5ea44d61b6a4658aadf948348db069c"}],
+    "sequence": 46062162
+  },
+  "timestamp": "2015-04-17T19:39:12.950+0000",
+  "uuid": "71673991-dad0-4c8e-9c22-78b0244c790c",
+  "event": "/restapi/v1.0/account/~/extension/255537016/presence?detailedTelephonyState=true"
+}
+ 
+{
+  "body": {
+    "telephonyStatus": "NoCall",
+    "extensionId": 255537016,
+    "activeCalls": [{"direction": "Outbound", "from": "16509540334", "telephonyStatus": "NoCall", "to": "16502008440", "sessionId": "915021981016", "id": "b5ea44d61b6a4658aadf948348db069c"}],
+    "sequence": 46063265
+  },
+  "timestamp": "2015-04-17T19:39:40.172+0000",
+  "uuid": "97b01949-1438-45f2-856a-54f89e83367f",
+  "event": "/restapi/v1.0/account/~/extension/255537016/presence?detailedTelephonyState=true"
 }
 ```
 
-This endpoint retrieves a specific kitten.
+* A call may consist of multiple call legs. Top-level telephonyStatus should be aggregated across these multiple call legs. 
+* A call is identified by its sessionId. For tracking a call, application should match by sessionId across activeCall items from multiple notifications.
+* In some rare cases notifications can be delivered in incorrect order. Application should remember largest “sequence” value from an event for a given call (identified by its sessionId) and ignore any events which come later with smaller “sequence”
 
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
+Some typical event flows for inbound calls are listed for the following scenarios:
 
-### HTTP Request
+1. Missed inbound call  (Ringing -> No Call)
+1. Answered inbound call (Ringing -> CallConnected -> NoCall)
+1. 2-legged Ringout
 
-`GET http://example.com/kittens/<ID>`
+## Call Notification
 
-### URL Parameters
+```javascript
+var subscription = rcsdk.getSubscription();
 
-Parameter | Description
---------- | -----------
-ID | The ID of the cat to retrieve
+subscription
+    .on(subscription.events.notification, function(msg) {
+        console.log(msg, msg.body);
+    })
+    .register({
+        events: [
+            '/account/~/extension/~/presence?detailedTelephonyState=true'
+        ]
+    })
+    .then(...);
+```
+
+To get notification of inbound and outbound call events, your application can receive push notifications from the RingCentral Connect Platform by subscribing to specific events, such as the telephony presence event.
+
+## Caller ID & Called Number
+
+```javascript
+var subscription = rcsdk.getSubscription();
+
+subscription
+    .on(subscription.events.notification, function(msg) {
+        console.log(msg.body.activeCalls[n].from); // activeCalls is array
+        console.log(msg.body.activeCalls[n].to);
+    })
+    .register({
+        events: [
+            '/account/~/extension/~/presence?detailedTelephonyState=true'
+        ],
+    })
+    .then(...);
+```
+
+Subscript to the account using the `detailedTelephonyState` to get caller info (caller id and called number) from telephony presence events.
+
+## Call Information During Call
+
+```javascript
+platform.apiCall({
+    url: rcsdk.getCallHelper().createUrl({active: true}),
+    get: { // this can be omitted
+        page: 1,
+        perPage: 10
+    }
+}).then(function(ajax) {
+    console.log(ajax.data.records);
+}.catch(function(e) {
+    alert('Active Calls Error: ' + e.message);
+});
+```
+
+To determine call duration or any other information about the call during the call, the application needs to remember discovered calls and save the time at which they were discovered (had Ringing or Connected status) and then duration can be calculated as difference between now and the saved time.
+
+The application may periodically (around 2-5 minutes) poll the active calls endpoint to make sure that even missed event notifications will not affect the application state. The application may also load a list of active calls after receiving event notifications. Please keep in mind that application may exceed RPS limits and will be throttled in this case, so application must handle this situation.
+
+## Determining End of Call
+
+The application is responsible for caching active calls. A common method is to use a session ID to track a call. 
+Your application may gather information about discovered calls and when it sees “No Call” after “Connected” status it means that the call has ended. Also the call will disappear from active calls list. See the section below on determining call duration of a recently ended call for more info.
+
+## Call Duration Post-Call
+
+```javascript
+// Determining call duaration of a recently ended call.
+platform.apiCall({
+    url: rcsdk.getCallHelper().createUrl({active: true}),
+    get: { // this can be omitted
+        page: 1,
+        perPage: 10
+    }
+}).then(function(ajax) {
+    console.log(ajax.data.records);
+}.catch(function(e) {
+    alert('Active Calls Error: ' + e.message);
+```
+
+Completed calls will stay in Active Calls for a limited time (few minutes). Use the following code to determine the duration of a recently completed call.
+
+## Call and Event Matching
+
+To match calls and events from the call log or active calls, use the `sessionId` property of calls from events’ active calls array and call log or active calls response.
+
+## Multiple Concurrent Calls
+
+To handle multiple concurrent calls, each call event will contain information about all calls, application must go through all calls in `msg.body.activeCalls` array. The application must remember `sequenceNumber` and ignore events with smaller sequence number than already received.
+
+## Call Control
+
+The RingCentral Connect Platform does not currently support any call control functions.
+
+# Call Queries
+
+A call management integration usually consists of tracking the telephony call status per the above and the following call query tasks:
+
+* View active calls
+* View recently ended calls
+* View historical calls
+
+## View Active Calls
+
+```javascript
+var activeCalls = [],
+    Call = rcsdk.getCallHelper();
+
+// This call may be repeated when needed, for example as a response to incoming Subscription
+platform.apiCall(Call.loadRequest(null, {
+    url: Call.createUrl({active: true}),
+    query: { // this can be omitted
+        page: 1,
+        perPage: 10
+    }
+})).then(function(response) {
+    activeCalls = Call.merge(activeCalls, response.data.records); // safely merge existing active calls with new ones
+}.catch(function(e) {
+    alert('Active Calls Error: ' + e.message);
+});
+```
+
+By default, the load request returns calls that were made during the last week. To alter the time frame, provide custom query.dateTo and query.dateFrom properties.
+
+## View Recently Ended Calls
+
+```javascript
+// Getting historical call information
+platform.apiCall({
+    url: rcsdk.getCallHelper().createUrl(),
+    get: { // this can be omitted
+        page: 1,
+        perPage: 10
+    }
+}).then(function(ajax) {
+    console.log(ajax.data.records);
+}.catch(function(e) {
+    alert('Calls Error: ' + e.message);
+});
+```
+
+Recently ended calls appear in Call Log with some delay (seconds to a minute or so) so the recommended way to retrieve them is to use Active Calls API.
+
+<aside class="notice">
+Completed calls stay in the Call Log for 2 years.
+</aside>
+
+## View Historical Calls
+
+```javascript
+var calls = [],
+    Call = rcsdk.getCallHelper();
+
+// This call may be repeated when needed, for example as a response to incoming Subscription
+platform.apiCall(Call.loadRequest(null, {
+    query: { // this can be omitted
+        page: 1,
+        perPage: 10
+    },
+})).then(function(response) {
+    calls = Call.merge(calls, response.data.records); // safely merge existing active calls with new ones
+}).catch(function(e) {
+    alert('Recent Calls Error: ' + e.message);
+});
+```
+
+By default, the load request returns calls that were made during the last week. To alter the time frame, provide custom query.dateTo and query.dateFrom properties.
+
+# Making Calls (RingOut)
+
+Outbound calls using RingCentral can be made using the RingOut functionality.
+
+## Two-Legged Calls
+
+When making a call, the RingCentral system establishes two calls, one for each of the two parties being connected, and then connects them. This results in events for two calls (2-legged calls) when initiated a single click-to-call?
+
+## Making an Outbound Call
+
+```javascript
+// Phone numbers should be in E.164 format.
+platform
+    .apiCall(rcsdk.getRingoutHelper().saveRequest({
+        from: {phoneNumber: '+16501111111'},
+        to: {phoneNumber: '+18882222222'},
+        callerId: {phoneNumber: '+18882222222'}, // optional,
+        playPrompt: false // optional
+    }))
+    .then(function(ajax) {
+      // here application can start polling
+      // also save ajax.data as, for example, prevRingoutData
+    })
+    .catch(handleError);
+```
+
+The application should stop polling the RingOut when its status changes to error or success because after that there will be no status updates.
+
+## Polling Outbound Call Status
+
+```javascript
+// Poll for the status of an ongoing outbound call
+function update(next, delay) {
+
+    if (!rcsdk.getRingoutHelper().isInProgress(ringout)) return;
+
+    platform
+        .apiCall(rcsdk.getRingoutHelper().loadRequest(prevRingoutData))
+        .then(function(ajax) {
+            // also save ajax.data as, for example, prevRingoutData
+            console.log(ajax.data); // updated status of ringout
+            timeout = next(delay); // you can increase delay here
+        })
+        .catch(handleError);
+
+}
+
+var timeout = rcsdk.getUtils().poll(update, 3000); // stay in RPS limits
+
+// To stop polling:
+
+rcsdk.getUtils().stopPolling(timeout);
+```
+
+Use polling to get the status of an ongoing outbound call.
+
+## Outbound Call Control
+
+The RingCentral Connect Platform does not currently support control of outbound calls. However, you can cancel ringout call while callee party status is `InProgress`. To do that make a `DELETE` request to ringout URI. 
+
+## Outbound Call Statuses
+
+* A 2-legged RingOut call is represented in events as an outbound call between `from` and `to` numbers provided in RingOut API request. 
+* There is the known issue: notification with `CallConnected` status comes after first leg is connected. So actually a call can be missed by callee but it won’t be reflected in event flow; but it will be reflected in call log.  
+* Phone numbers in notification (`from` and `to`) may be either E.164 phone numbers (with or without `+`) or short extension numbers (e.g. “101”) for calls between extensions
+* For some RC phone system configurations when multiple devices are ringing for inbound call, you may get transitional notifications with `NoCall` status which will be immediately followed by `Ringing` or `CallConnected` (for the same `sessionId`).
+
+## Polling & Events Notification
+
+All RingOut calls will appear in event notifications and active calls endpoint. The difference between what RingOut polling provides is more granular status updates (application can track status of both parties). Normally it should be represented by two independent views/flows in application. In general there is no point to match ringout calls with any of active calls, those process may happen concurrently.
+
+If the application needs to track outbound calls and save them somewhere, it is better to initiate the ringout and NOT poll it, but expect a notification and work only with notifications/active calls.
 
