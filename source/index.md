@@ -7,14 +7,46 @@ language_tabs:
   - python
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='http://developers.ringcentral.com' target="_blank">Sign Up</a> for RingCentral for Developers
+  - Documentation Powered by <a href='http://github.com/tripit/slate' target="_blank">Slate</a>
 
 includes:
   - errors
 
 search: true
 ---
+
+# How to deploy RC tutorials to Github
+
+## Fork Slate and build
+
+1. Fork project `slate` from github: https://github.com/tripit/slate
+2. Clone to local machine for modifications: `git clone https://github.com/agongdai/slate.git`
+3. `cd slate`
+4. `bundle install`: here may report error:
+
+> Gem::RemoteFetcher::FetchError: SSL_connect returned=1 errno=0
+> state=SSLv3 read server certificate B: certificate verify failed
+> (https://rubygems.org/gems/middleman-sprockets-3.4.2.gem) An error occurred while installing middleman-sprockets (3.4.2), and Bundler cannot continue. Make sure that `gem install middleman-sprockets -v '3.4.2'` succeeds before bundling.
+
+That is because the URL `https://rubygems.org` somehow has certificate issue. Change it to `http://rubygems.org`: modify the first line of file `Gemfile` and `Gemfile.lock`.
+
+## `json` gem error
+
+5. When installing `json`, an error may occur:
+> ERROR:  Error installing json:
+>     The 'json' native gem requires installed build tools.
+
+Follow the answer of this guy: Massimo Fazzolari. If there are multiple version of Ruby installations, uninstall one of them first. 
+
+The version is changed from `1.9.8` to `1.9.6`.
+
+## Local server, build and publish
+
+6. `bundle exec middleman server`: start the local server and visit [http://localhost:4567](http://localhost:4567).
+7. `rake build`: make whatever modifications to `source/index.md` and commit. Then build the HTML files to folder `build`. The file `index.html` is the entry point.
+8. Copy all files in folder `build` to the `rc-tutorials` folder of project `agongdai.github.io`.
+9. Visite http://agongdai.github.io/rc-tutorials.
 
 # Introduction
 

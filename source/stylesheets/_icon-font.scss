@@ -1,3 +1,57 @@
+$fontPath: "../fonts";
+$fontLatoPath: $fontPath + "/lato";
+
+// Lato Light/Light Italic
+// --------------------------------------------------
+@font-face {
+  font-family: "Lato";
+  font-weight: 300;
+  font-style: normal;
+  src: url($fontLatoPath + '/lato-lig-webfont-g.eot');
+  src: url($fontLatoPath + '/lato-lig-webfont-g.eot?#iefix') format('embedded-opentype'), url($fontLatoPath + '/lato-lig-webfont-g.woff') format('woff'),url($fontLatoPath + '/lato-lig-webfont-g.ttf') format('truetype'),url($fontLatoPath + '/lato-lig-webfont.svg#latolight') format('svg');
+}
+@font-face {
+  font-family: "Lato";
+  font-weight: 300;
+  font-style: italic;
+  src: url($fontLatoPath + '/lato-ligita-webfont-g.eot');
+  src: url($fontLatoPath + '/lato-ligita-webfont-g.eot?#iefix') format('embedded-opentype'), url($fontLatoPath + '/lato-ligita-webfont-g.woff') format('woff'),url($fontLatoPath + '/lato-ligita-webfont-g.ttf') format('truetype'),url($fontLatoPath + '/lato-ligita-webfont.svg#latolight_italic') format('svg');
+}
+
+// Lato Normal/Normal Italic
+// --------------------------------------------------
+@font-face {
+  font-family: "Lato";
+  font-weight: normal;
+  font-style: normal;
+  src: url($fontLatoPath + '/lato-reg-webfont-g.eot');
+  src: url($fontLatoPath + '/lato-reg-webfont-g.eot?#iefix') format('embedded-opentype'), url($fontLatoPath + "/lato-reg-webfont-g.woff") format('woff'), url($fontLatoPath + '/lato-reg-webfont-g.ttf') format('truetype'),url($fontLatoPath + '/lato-reg-webfont.svg#latoregular') format('svg');
+}
+@font-face {
+  font-family: "Lato";
+  font-weight: normal;
+  font-style: italic;
+  src: url($fontLatoPath + '/lato-regita-webfont-g.eot');
+  src: url($fontLatoPath + '/lato-regita-webfont-g.eot?#iefix') format('embedded-opentype'),url($fontLatoPath + '/lato-regita-webfont-g.woff') format('woff'),url($fontLatoPath + '/lato-regita-webfont-g.ttf') format('truetype'),url($fontLatoPath + '/lato-regita-webfont.svg#latoitalic') format('svg');
+}
+
+// Lato Bold/Bold Italic
+// --------------------------------------------------
+@font-face {
+  font-family: "Lato";
+  font-weight: 700;
+  font-style: normal;
+  src: url($fontLatoPath + '/lato-bol-webfont-g.eot');
+  src: url($fontLatoPath + '/lato-bol-webfont-g.eot?#iefix') format('embedded-opentype'), url($fontLatoPath + "/lato-bol-webfont-g.woff") format('woff'), url($fontLatoPath + '/lato-bol-webfont-g.ttf') format('truetype'),url($fontLatoPath + '/lato-bol-webfont.svg#latobold') format('svg');
+}
+@font-face {
+  font-family: "Lato";
+  font-weight: 700;
+  font-style: italic;
+  src: url($fontLatoPath + '/lato-bolita-webfont-g.eot');
+  src: url($fontLatoPath + '/lato-bolita-webfont-g.eot?#iefix') format('embedded-opentype'),url($fontLatoPath + '/lato-bolita-webfont-g.woff') format('woff'),url($fontLatoPath + '/lato-bolita-webfont-g.ttf') format('truetype'),url($fontLatoPath + '/lato-bolita-webfont.svg#latobold_italic') format('svg');
+}
+
 @font-face {
   font-family: 'slate';
   src:font-url('slate.eot?-syv14m');
