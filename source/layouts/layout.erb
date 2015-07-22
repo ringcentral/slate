@@ -47,8 +47,17 @@ under the License.
         <%= image_tag('navbar.png') %>
       </span>
     </a>
+    <div class="rc-dpw-nav">
+      <div class="logo"><%= image_tag "logo.png" %></div>
+      <ul class="menus">
+        <li><a href="">OVERVIEW</a></li>
+        <li class="active"><a class="menu-link" href="">API & DOCS</a></li>
+        <li><a href="">SUPPORT & FAQS</a></li>
+        <li><a href="">APP GALLERY</a></li>
+        <li><a href="">BLOG</a></li>
+      </ul>
+    </div>
     <div class="tocify-wrapper">
-      <%= image_tag "logo.png" %>
       <% if language_tabs %>
         <div class="lang-selector">
           <% language_tabs.each do |lang| %>
