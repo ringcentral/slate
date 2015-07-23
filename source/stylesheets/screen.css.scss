@@ -388,7 +388,7 @@ html, body {
 
   h1:first-child, div:first-child + h1 {
     border-top-width: 0;
-    margin: 0 0 1em;
+    margin: 0 50% 1em 0;
   }
 
   h2 {
@@ -566,6 +566,7 @@ html, body {
   pre {
     @extend %code-font;
     padding-left: 28px;
+    padding-right: 28px;
   }
 
   blockquote {
