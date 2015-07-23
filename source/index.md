@@ -2,6 +2,7 @@
 title: API Reference
 
 language_tabs:
+  - javascript
   - shell
   - ruby
   - python
@@ -15,6 +16,21 @@ includes:
 
 search: true
 ---
+
+# Mockup code for syntax highlighting
+
+A sample JavaScript code block.
+
+```javascript
+var RC_SERVER_PRODUCTION = 'http://platform.ringcentral.com';
+var RC_SERVER_SANDBOX = 'https://platform.devtest.ringcentral.com';
+
+var rcsdk = new RCSDK({
+  server: RC_SERVER_SANDBOX,
+  appKey: 'yourAppKey',
+  appSecret: 'yourAppSecret'
+});
+```
 
 # How to deploy RC tutorials to Github
 

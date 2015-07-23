@@ -37,6 +37,11 @@ html, body {
   -webkit-text-size-adjust: none; /* Never autoresize text */
 }
 
+.whole-page-wrapper {
+  width: 86%;
+  margin: 0 auto;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // TABLE OF CONTENTS
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +70,7 @@ html, body {
   position: fixed;
   z-index: 30;
   top: 0;
-  left: 0;
+  left: 7%;
   bottom: 0;
   width: $nav-width;
   background-color: $nav-bg;
@@ -292,7 +297,9 @@ html, body {
 
 .lang-selector {
   background-color: $lang-select-bg;
-  width: 100%;
+  width: calc((86% - 230px)/2);
+  width: -webkit-calc((86% - 230px)/2);
+  width: -moz-calc((86% - 230px)/2);
   font-weight: bold;
   a {
     display: block;
@@ -379,7 +386,6 @@ html, body {
     border-top-width: 0;
     margin-top: 0;
     margin-bottom: 0;
-    border-bottom: 1px solid $content-border-color;
   }
 
   h2 {
@@ -410,7 +416,7 @@ html, body {
 
   hr {
     margin: 2em 0;
-    border-top: 2px solid $examples-bg;
+    border-top: 2px solid $content-border-color;
     border-bottom: 2px solid $main-bg;
   }
 
@@ -427,10 +433,12 @@ html, body {
       padding: 5px 10px;
       border-bottom: 1px solid #ccc;
       vertical-align: bottom;
+      min-width: 70px;
     }
 
     td {
-      padding: 10px;
+      padding: 0 10px;
+      line-height: 30px;
     }
 
     tr:last-child {
@@ -438,11 +446,11 @@ html, body {
     }
 
     tr:nth-child(odd)>td {
-      background-color: lighten($main-bg,4.2%);
+      background-color: white;
     }
 
     tr:nth-child(even)>td {
-      background-color: lighten($main-bg,2.4%);
+      background-color: #f6f6f6;
     }
   }
 
@@ -518,9 +526,7 @@ html, body {
     padding: 2px;
     margin: -2px;
     border-radius: 4px;
-    border: 1px solid #a9a9a9;
-    @include text-shadow(1px 1px 0 #666);
-    background: linear-gradient(to top left, #F7E633 0%, #F1D32F 100%);
+    background-color: #fff200;
   }
 }
 
@@ -630,7 +636,7 @@ html, body {
   position: fixed;
   top: 0;
   height: 125px;
-  width: 100%;
+  width: 86%;
   background-color: white;
   z-index: 100;
   .logo {
