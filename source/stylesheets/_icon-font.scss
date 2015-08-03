@@ -72,6 +72,8 @@ $fontLatoPath: $fontPath + "/lato";
   font-variant: normal;
   text-transform: none;
   line-height: 1;
+  position: relative;
+  top: -2px;
 }
 
 %icon-exclamation-sign {
