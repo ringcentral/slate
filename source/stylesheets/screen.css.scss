@@ -111,7 +111,7 @@ html, body {
       position: absolute;
       top: 17px;
       left: $nav-padding;
-      color: $nav-text;
+      color: #a9a9a9;
       @extend %icon-search;
     }
   }
@@ -380,12 +380,13 @@ html, body {
 
   h1 {
     @extend %header-font;
-    font-size: 30px;
+    font-size: 34px;
     padding: 1em 0 0;
     margin-top: 2em;
     margin-bottom: 1em;
     border-top: 1px solid $content-border-color;
     color: $content-header-color;
+    font-weight: normal;
   }
 
   h1:before {
@@ -393,7 +394,7 @@ html, body {
     margin-right: 28px;
     border-left: 5px solid $content-header-color;
     display: inline-block;
-    height: 22px;
+    height: 26px;
   }
 
   h1:first-child, div:first-child + h1 {
@@ -489,7 +490,7 @@ html, body {
   }
 
   code {
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(169,169,169,0.3);
     padding: 3px;
     border-radius: 3px;
     @extend %break-words;
