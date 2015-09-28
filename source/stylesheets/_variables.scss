@@ -104,10 +104,10 @@ $lang-border-color: #0073ae;
 // These settings are probably best left alone.
 
 %break-words {
-     word-break: break-all;
+  word-break: break-all;
 
-     /* Non standard for webkit */
-     word-break: break-word;
+  /* Non standard for webkit */
+  word-break: break-word;
 
-        hyphens: auto;
+  hyphens: auto;
 }

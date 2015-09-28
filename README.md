@@ -91,6 +91,11 @@ Examples of Slate in the Wild
 * [viagogo API Documentation](http://developer.viagogo.net/)
 * [Fidor Bank API Documentation](http://docs.fidor.de/)
 * [Market Prophit API Documentation](http://developer.marketprophit.com/)
+* [OAuth.io API Documentation](http://docs.oauth.io/)
+* [Aircall for Developers](http://developer.aircall.io/)
+* [SupportKit API Docs](http://docs.supportkit.io/)
+* [SocialRadar's LocationKit Docs](https://docs.locationkit.io/)
+* [SafetyCulture API Documentation](https://developer.safetyculture.io/)
 
 (Feel free to add your site to this list in a pull request!)
 

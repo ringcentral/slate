@@ -401,8 +401,7 @@
 
             }).append($("<a/>", {
 
-                "text": self.text(),
-                "title": self.text()
+                "text": self.text()
 
             }));
 
