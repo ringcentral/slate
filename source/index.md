@@ -245,6 +245,52 @@ Send `POST` request: Specify `accountId` and `extensionId` in the request URL or
 
 ## Send Pager Message
 
+~~~ http
+POST /restapi/v1.0/account/~/extension/~/company-pager HTTP/1.1
+Content-Type: application/json
+Content-Length: ACTUAL_CONTENT_LENGTH_HERE
+
+{
+"to": [{"extensionNumber": "102"}, 
+       {"extensionNumber": "103"}],
+
+"from": {"extensionNumber": "101"},
+"text": "Hello!"
+}
+                                            
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+   "uri": ".../account/1346632010/extension/1346632010/message-store/320272670010",
+   "id": 320272670010,
+   "to":    [
+      {"extensionNumber": "101"},
+      {"extensionNumber": "102"},
+      {"extensionNumber": "103"}
+   ],
+   "from": {"extensionNumber": "101"},
+   "type": "Pager",
+   "creationTime": "2012-10-18T13:18:24.000Z",
+   "readStatus": "Unread",
+   "priority": "Normal",
+   "attachments": [   {
+      "id": 1,
+      "uri": "http:.../restapi/v1.0/account/1346632010/extension/1346632010/message-store/320272670010/content/1",
+      "contentType": "text/plain"
+   }],
+   "direction": "Outbound",
+   "availability": "Alive",
+   "subject": "Hello!",
+   "messageStatus": "Sent",
+   "conversationId": 320272670010,
+   "lastModifiedTime": "2012-10-18T13:18:24.000Z",
+   "pgToDepartment": false
+}
+~~~
+
+Pager messages are RingCentral specific types of text messages which can be sent between extensions of one account. Unlike SMS, pager messages can be sent to multiple recipients, so the API allows several extension numbers in the **to** field. Another difference from SMS is that the pager message that is sent to the department extension is automatically forwarded to all department members. This allows setting up dedicated mailing lists within the organization. The endpoint **company-pager** is designed to handle pager messages. 
+
 # Getting Started
 
 ## Installing the SDK
@@ -282,7 +328,43 @@ var platform = rcsdk.getPlatform();
 
 Now that you have your platform singleton and SDK has been configured with the correct server URL and API key, your application can log in so that it can access the features of the API.
 
-## Login
+## Login via 3-legged OAuth
+
+~~~ javascript
+// Get user authorization URL
+var myRedirectUri = 'https://example.com/oauth';
+var authorizeUrl = t.rcDemo.Core.rcSdk.getPlatform().getAuthURL({
+    redirectUri: myRedirectUri
+});
+// Open window for authorizeUrl
+
+// In redirect URL, retrieve `code` from query string and exhange for access token.
+// Get query string
+var myRedirectUri = 'https://example.com/oauth';
+var qs = rcsdk.getPlatform().parseAuthRedirectUrl(window.location.href);
+qs.redirectUri = myRedirectUri;
+
+if ('code' in qs) {
+    var res = rcsdk.getPlatform().authorize(qs)
+        .then(function(response) {
+            // process response and close window (if popup)
+            window.open('', '_self', ''); 
+            window.close(); 
+        }).catch(function(e) {
+            console.log("Error: Authorization")
+        });
+} else {
+    console.log("Error: No Code")
+}
+~~~
+
+3-legged OAuth is the standard login approach for user applications via the web where the user will be presented with a standard RingCentral login. This approach also supports RingCentral customers that have deployed single sign-on (SSO) via 3-rd party identity providers (IdPs). To implement 3-legged OAuth, implement the following steps:
+
+1. Configure a redirect URI for your service in the RingCentral Developer portal which will be used to send the authorization code upon success login and authorization.
+2. Then use the redirect URI with the SDK to retrieve an OAuth authorization URL that can be used to open a browser window.
+3. Finally, in the web page at your redirect URI, extract the authoriation code from the URL string's `code` query parameter and exchange the authorization code for an access token.
+
+## Login via 2-legged OAuth
 
 ~~~ javascript
 platform.authorize({
@@ -294,13 +376,15 @@ platform.authorize({
 }).catch(function(e) {
     alert(e.message  || 'Server cannot authorize user');
 });
-~~~ 
+~~~
+
+Client-server applications can use the 2-legged OAuth approach which doesn't provide a user login page.
 
 To log in to RingCentral, get the Platform object and call its authorize method, providing valid username, extension, and password values. Enter your phone number in E.164 format for username. The `+` may be omitted.
 
 A Promise is returned, and you can use its then method to specify your continuation function, and its catch method to specify an error handling function.
 
-## Handling Authn Exceptions
+## Handling Authorization Exceptions
 
 ~~~ javascript
 platform.on(platform.events.accessViolation, function(e){
@@ -314,7 +398,7 @@ To handle possible access or authentication exceptions that may occur while the 
 A recommended way to handle access or authentication exceptions is to direct the user to the login page or UI. The login page may attempt to automatically re-authenticate the user using stored authentication data (see below).
 </aside>
 
-## Determining Authn Status
+## Determining Authorization Status
 
 ~~~ javascript
 // To check authentication status:
@@ -350,6 +434,111 @@ platform.logout().then(...)
 ~~~ 
 
 Your application can log out the user by calling the `platform.logout()` method.
+
+# Making Calls (RingOut)
+
+Outbound calls using RingCentral can be made using the RingOut functionality.
+
+## Two-Legged Calls
+
+When making a call, the RingCentral system establishes two calls, one for each of the two parties being connected, and then connects them. This results in events for two calls (2-legged calls) when initiated a single click-to-call?
+
+## Making an Outbound Call
+
+~~~ javascript
+// Phone numbers should be in E.164 format.
+platform
+    .apiCall(rcsdk.getRingoutHelper().saveRequest({
+        from: {phoneNumber: '+16501111111'},
+        to: {phoneNumber: '+18882222222'},
+        callerId: {phoneNumber: '+18882222222'}, // optional,
+        playPrompt: false // optional
+    }))
+    .then(function(ajax) {
+      // here application can start polling
+      // also save ajax.data as, for example, prevRingoutData
+    })
+    .catch(handleError);
+~~~ 
+
+The application should stop polling the RingOut when its status changes to error or success because after that there will be no status updates.
+
+## Polling Outbound Call Status
+
+~~~ javascript
+// Poll for the status of an ongoing outbound call
+function update(next, delay) {
+
+    if (!rcsdk.getRingoutHelper().isInProgress(ringout)) return;
+
+    platform
+        .apiCall(rcsdk.getRingoutHelper().loadRequest(prevRingoutData))
+        .then(function(ajax) {
+            // also save ajax.data as, for example, prevRingoutData
+            console.log(ajax.data); // updated status of ringout
+            timeout = next(delay); // you can increase delay here
+        })
+        .catch(handleError);
+
+}
+
+var timeout = rcsdk.getUtils().poll(update, 3000); // stay in RPS limits
+
+// To stop polling:
+
+rcsdk.getUtils().stopPolling(timeout);
+~~~ 
+
+Use polling to get the status of an ongoing outbound call.
+
+## Outbound Call Control
+
+The RingCentral Connect Platform does not currently support control of outbound calls. However, you can cancel ringout call while callee party status is `InProgress`. To do that make a `DELETE` request to ringout URI. 
+
+## Outbound Call Statuses
+
+* A 2-legged RingOut call is represented in events as an outbound call between `from` and `to` numbers provided in RingOut API request. 
+* There is the known issue: notification with `CallConnected` status comes after first leg is connected. So actually a call can be missed by callee but it won't be reflected in event flow; but it will be reflected in call log.  
+* Phone numbers in notification (`from` and `to`) may be either E.164 phone numbers (with or without `+`) or short extension numbers (e.g. '101') for calls between extensions
+* For some RC phone system configurations when multiple devices are ringing for inbound call, you may get transitional notifications with `NoCall` status which will be immediately followed by `Ringing` or `CallConnected` (for the same `sessionId`).
+
+## Polling & Events Notification
+
+All RingOut calls will appear in event notifications and active calls endpoint. The difference between what RingOut polling provides is more granular status updates (application can track status of both parties). Normally it should be represented by two independent views/flows in application. In general there is no point to match ringout calls with any of active calls, those process may happen concurrently.
+
+If the application needs to track outbound calls and save them somewhere, it is better to initiate the ringout and NOT poll it, but expect a notification and work only with notifications/active calls.
+
+# Making Calls (URI Scheme)
+
+In addition to making calls via the RingOut API, if the user has the RingCentral for Desktop softphone installed, it is possible to use a URI scheme to initiate a dial out from the application.
+
+RingCentral supports both a custom `rcmobile` URI scheme will resolve the issue of competing applications using the same URI scheme and a standard `tel` URI scheme which is more common but subject to competing uses.
+
+## RingCentral URI Scheme
+
+~~~
+// HTML URI Scheme
+<a href="rcmobile://call?number=16501112222">1-650-111-2222</a>
+~~~
+
+~~~ javascript
+// Use the following for Google Chrome only
+var w = (window.parent)?window.parent:window;
+w.location.assign('rcmobile://call?number=16501112222');
+// For more info, see http://stackoverflow.com/questions/2330545/
+~~~
+
+The RingCentral `rcmobile` URI Scheme is specific to RingCentral and thus has a higher probability of workign as intended.
+
+## Standard URI Scheme
+
+~~~
+// HTML URI Scheme
+<a href="tel:1-650-111-2222">1-650-111-2222</a>
+<a href="tel:16501112222">1-650-111-2222</a>
+~~~
+
+The standard `tel` URI Scheme is also supported but since multiple applications use this URI scheme, there may be competing applications resulting in a less desirable expeirence.
 
 # Call Management
 
@@ -644,75 +833,23 @@ platform.apiCall(Call.loadRequest(null, {
 
 By default, the load request returns calls that were made during the last week. To alter the time frame, provide custom query.dateTo and query.dateFrom properties.
 
-# Making Calls (RingOut)
+# Call Recordings
 
-Outbound calls using RingCentral can be made using the RingOut functionality.
-
-## Two-Legged Calls
-
-When making a call, the RingCentral system establishes two calls, one for each of the two parties being connected, and then connects them. This results in events for two calls (2-legged calls) when initiated a single click-to-call?
-
-## Making an Outbound Call
+Call log records with recordings will have a `recording` object property which includes information on the recording including the `contentUri` string property which can be used to retrieve the recording.
 
 ~~~ javascript
-// Phone numbers should be in E.164 format.
-platform
-    .apiCall(rcsdk.getRingoutHelper().saveRequest({
-        from: {phoneNumber: '+16501111111'},
-        to: {phoneNumber: '+18882222222'},
-        callerId: {phoneNumber: '+18882222222'}, // optional,
-        playPrompt: false // optional
-    }))
-    .then(function(ajax) {
-      // here application can start polling
-      // also save ajax.data as, for example, prevRingoutData
-    })
-    .catch(handleError);
-~~~ 
-
-The application should stop polling the RingOut when its status changes to error or success because after that there will be no status updates.
-
-## Polling Outbound Call Status
-
-~~~ javascript
-// Poll for the status of an ongoing outbound call
-function update(next, delay) {
-
-    if (!rcsdk.getRingoutHelper().isInProgress(ringout)) return;
-
-    platform
-        .apiCall(rcsdk.getRingoutHelper().loadRequest(prevRingoutData))
-        .then(function(ajax) {
-            // also save ajax.data as, for example, prevRingoutData
-            console.log(ajax.data); // updated status of ringout
-            timeout = next(delay); // you can increase delay here
-        })
-        .catch(handleError);
-
+var callLogRecord = {
+    [...]
+    "recording":    {
+        "uri": "https.../restapi/v1.0/account/401190149008/recording/401547458008",
+        "id": "401547458008",
+        "type": "OnDemand",
+        "contentUri": "https.../restapi/v1.0/account/401190149008/recording/401547458008/content"
+    }
 }
 
-var timeout = rcsdk.getUtils().poll(update, 3000); // stay in RPS limits
+var recordingUrl = callLogRecord['recording']['contentUri'];
+var recordingUrlWithToken = rcsdk.getPlatform().apiUrl(uri, {addToken: true});
+~~~
 
-// To stop polling:
 
-rcsdk.getUtils().stopPolling(timeout);
-~~~ 
-
-Use polling to get the status of an ongoing outbound call.
-
-## Outbound Call Control
-
-The RingCentral Connect Platform does not currently support control of outbound calls. However, you can cancel ringout call while callee party status is `InProgress`. To do that make a `DELETE` request to ringout URI. 
-
-## Outbound Call Statuses
-
-* A 2-legged RingOut call is represented in events as an outbound call between `from` and `to` numbers provided in RingOut API request. 
-* There is the known issue: notification with `CallConnected` status comes after first leg is connected. So actually a call can be missed by callee but it won't be reflected in event flow; but it will be reflected in call log.  
-* Phone numbers in notification (`from` and `to`) may be either E.164 phone numbers (with or without `+`) or short extension numbers (e.g. '101') for calls between extensions
-* For some RC phone system configurations when multiple devices are ringing for inbound call, you may get transitional notifications with `NoCall` status which will be immediately followed by `Ringing` or `CallConnected` (for the same `sessionId`).
-
-## Polling & Events Notification
-
-All RingOut calls will appear in event notifications and active calls endpoint. The difference between what RingOut polling provides is more granular status updates (application can track status of both parties). Normally it should be represented by two independent views/flows in application. In general there is no point to match ringout calls with any of active calls, those process may happen concurrently.
-
-If the application needs to track outbound calls and save them somewhere, it is better to initiate the ringout and NOT poll it, but expect a notification and work only with notifications/active calls.
