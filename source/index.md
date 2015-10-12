@@ -333,7 +333,7 @@ Now that you have your platform singleton and SDK has been configured with the c
 ~~~ javascript
 // Get user authorization URL
 var myRedirectUri = 'https://example.com/oauth';
-var authorizeUrl = t.rcDemo.Core.rcSdk.getPlatform().getAuthURL({
+var authorizeUrl = rcsdk.getPlatform().getAuthURL({
     redirectUri: myRedirectUri
 });
 // Open window for authorizeUrl
