@@ -101,7 +101,12 @@ To access a Call Log resource you will require this URI:
 
 `GET /restapi/v1.0/account/{accountId}/extension/{extensionId}/call-log`
 
-Send the request having specified particular accountId and extensionId or using simplified syntax with tilde characters. Please note, that if dateFrom parameter is not specified, server will return records for last week only.
+Send the request having specified particular accountId and extensionId or using simplified syntax with tilde characters.
+
+**Example URI using simplified tilde syntax**
+`GET /restapi/v1.0/account/~/extension/~/call-log`
+
+Please note, that if dateFrom parameter is not specified, server will return records for last week only.
 
 ## Retrieve Filtered Call Logs
 
@@ -241,7 +246,12 @@ If you need to send a text message to somebody, you should use this URI:
 
 `POST /restapi/v1.0/account/{accountId}/extension/{extensionId}/sms`
 
-Send `POST` request: Specify `accountId` and `extensionId` in the request URL or use simplified syntax with tilde characters. Specify the recipient phone number in the `to` field and one of your valid RingCentral phone numbers in the `from` field. Enter your message in the `text` field.
+Send `POST` request: Specify `accountId` and `extensionId` in the request URL or use simplified syntax with tilde characters.
+
+**Example URI using simplified tilde syntax**
+`POST /restapi/v1.0/account/~/extension/~/sms`
+
+Specify the recipient phone number in the `to` field and one of your valid RingCentral phone numbers in the `from` field. Enter your message in the `text` field.
 
 ## Send Pager Message
 
