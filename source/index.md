@@ -299,6 +299,10 @@ To install the SDK, follow the online instructions posted at Github:
 
 [https://github.com/ringcentral/js-sdk#installation](https://github.com/ringcentral/js-sdk#installation)
 
+~~~ javascript
+bower install ringcentral --save
+~~~
+
 ## Instantiating the SDK
 
 ~~~ javascript
