@@ -4,6 +4,7 @@ title: RingCentral API Reference
 language_tabs:
   - http
   - javascript
+  - csharp : C#
 
 toc_footers:
   - <a target="_blank" href='https://developers.ringcentral.com/sign-up.html#/'>Sign Up for RingCentral for Developers</a>
@@ -312,6 +313,13 @@ var rcsdk = new RCSDK({
 });
 ~~~ 
 
+~~~ csharp
+using RingCentral;
+
+var rcsdk = new SDK("yourAppKey", "yourAppSecret", "RC_SERVER_SANDBOX", 
+    "yourAppName Name","yourAppVersion");
+~~~ 
+
 The SDK is represented by the global RCSDK constructor. Your application must create an instance of this object.
 
 In order to bootstrap the RingCentral JavaScript SDK, you have to first get a reference to the Platform singleton and then configure it. Before you can do anything using the Platform singleton, you need to configure it with the server URL (this tells the SDK which server to connect to) and your unique API key (this is provided by RingCentral's developer relations team).
@@ -325,6 +333,10 @@ This instance will be used later on to perform calls to API.
 ~~~ javascript
 var platform = rcsdk.getPlatform();
 ~~~ 
+
+~~~ csharp
+var platform = rcsdk.GetPlatform();
+~~~
 
 Now that you have your platform singleton and SDK has been configured with the correct server URL and API key, your application can log in so that it can access the features of the API.
 
@@ -378,6 +390,20 @@ platform.authorize({
 });
 ~~~
 
+~~~ csharp
+try
+{
+    var authResult = platform.Authorize("+18001234567", "101", 
+        "yourpassword", true);
+        
+    //your code here
+}
+catch (Exception ex)
+{
+    //log or notify authorization exception
+}
+~~~
+
 Client-server applications can use the 2-legged OAuth approach which doesn't provide a user login page.
 
 To log in to RingCentral, get the Platform object and call its authorize method, providing valid username, extension, and password values. Enter your phone number in E.164 format for username. The `+` may be omitted.
@@ -411,6 +437,22 @@ platform.isAuthorized()
 if (platform.isTokenValid()) {...}
 ~~~ 
 
+~~~ csharp
+// To check authentication status:
+if (platform.IsAuthorized()){
+    
+    //your code here    
+    
+}else{
+    
+    //go through the authorization process again
+    
+}
+
+// C# SDK doesn't provide a way to check auth status synchronously
+// without auto-refresh of the access token yet
+~~~ 
+
 The `isAuthorized` method will automatically perform a refresh of the access token, if needed. This method may be used in the login page of your application for automatic login.
 
 There is also a synchronous method for checking the authentication status that does not automatically perform a refresh of the access token.
@@ -422,6 +464,10 @@ There is also a synchronous method for checking the authentication status that d
 platform.refresh().then(...)
 ~~~ 
 
+~~~ csharp
+platform.Refresh();
+~~~
+
 Access token refresh normally happens automatically for common use cases. On rare occasions, you may perform a refresh of the access token manually by calling the refresh method using the `platform.refresh()` method.
 
 ## Logout
@@ -432,6 +478,10 @@ platform.logout()
 // with callback
 platform.logout().then(...)
 ~~~ 
+
+~~~ csharp
+platform.Logout();
+~~~
 
 Your application can log out the user by calling the `platform.logout()` method.
 
