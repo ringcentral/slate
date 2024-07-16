@@ -35,7 +35,7 @@ This endpoint retrieves all Attachments for a specific entity .
 
 Parameters* | Description |
 --------- | ------- |
-entity | The entity type: can be one of the following:  requirement, test, testset, instance, step, step-run, issue |
+entity | The entity type: can be one of the following:  issue, requirement, test, testset, instance, step, run, step-run |
 entity-id | the entity id |
 
 
