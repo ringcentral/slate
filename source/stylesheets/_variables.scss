@@ -102,35 +102,36 @@ $audit-log-hover: #007355;
 
 // BACKGROUND COLORS
 ////////////////////
+$body-color: #424242;
 $nav-bg: #292929;
 $examples-bg: #2f2f2f;
-$code-bg: #292929;
+$code-bg: $nav-bg;
 $code-annotation-bg: #1c1c1c;
-$nav-subitem-bg: #00b2a9;
-$nav-active-bg: #ffffff;
-$nav-active-parent-bg: #018D85 !default; // parent links of the current section
+$nav-subitem-bg: $harvest-base;
+$nav-active-bg: $birch-white;
+$nav-active-parent-bg: $harvest-hover !default; // parent links of the current section
 $lang-select-border: #000;
 $lang-select-bg: #222;
 $lang-select-active-bg: $examples-bg; // feel free to change this to blue or something
 $lang-select-pressed-bg: #111; // color of language tab bg when mouse is pressed
-$main-bg: #FFFFFF;
+$main-bg: $birch-white;
 $aside-notice-bg: #ccf0ee;
 $aside-warning-bg: #fcf5cc;
 $aside-success-bg: #b7dd79;
 $search-notice-bg: #c97a7e;
-$footer-nav-items-bg: #2f2f2f;
+$footer-nav-items-bg: $examples-bg;
 
 // TEXT COLORS
 ////////////////////
 $main-text: #54585a !default; // main content text color
-$nav-text: #fff !default;
-$nav-active-text: #54585a !default;
-$nav-active-parent-text: #fff !default; // parent links of the current section
+$nav-text: $birch-white !default;
+$nav-active-text: $main-text !default;
+$nav-active-parent-text: $birch-white !default; // parent links of the current section
 $lang-select-text: #9b9b9b !default; // color of unselected language tab text
-$lang-select-active-text: #9b9b9b !default; // color of selected language tab text
-$lang-select-pressed-text: #9b9b9b !default; // color of language tab text when mouse is pressed
-$nav-home-text: #9b9b9b;
-$footer-items-text: #9b9b9b;
+$lang-select-active-text: $lang-select-text !default; // color of selected language tab text
+$lang-select-pressed-text: $lang-select-text !default; // color of language tab text when mouse is pressed
+$nav-home-text: $lang-select-text;
+$footer-items-text: $lang-select-text;
 
 
 // SIZES
@@ -170,7 +171,7 @@ $phone-width: $tablet-width - $nav-width !default; // min width before reverting
 // OTHER
 ////////////////////
 $nav-footer-border-color: #666 !default;
-$search-box-border-color: #666 !default;
+$search-box-border-color: $nav-footer-border-color !default;
 
 
 ////////////////////////////////////////////////////////////////////////////////
