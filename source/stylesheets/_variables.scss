@@ -85,20 +85,20 @@ $birch-grey-900: #526B63;
 $birch-white: #FFFFFF;
 
 // SERVICE-BASED BACKGROUND COLORS
-$harvest-base: #00b2a9;
-$harvest-hover: #018D85;
-$job-board-base: #7fade3;
-$job-board-hover: #5c8cc4;
-$webhooks-base: #62B2c4;
-$webhooks-hover: #448fa0;
-$onboarding-base: #4a9cd5;
-$onboarding-hover: #2384C7;
-$ingestion-base: #C67F90;
-$ingestion-hover: #A15F6F;
-$assessment-base: #4AAAD3;
-$assessment-hover: #3086AA;
-$audit-log-base: #008561;
-$audit-log-hover: #007355;
+$harvest-base: $birch-green-E400;
+$harvest-hover: $birch-green-500;
+$job-board-base: $birch-iris-E300;
+$job-board-hover: $birch-iris-500;
+$webhooks-base: $birch-violet-E300;
+$webhooks-hover: $birch-violet-500;
+$onboarding-base: $birch-iris-500;
+$onboarding-hover: $birch-iris-700;
+$ingestion-base: $birch-poppy-E200;
+$ingestion-hover: $birch-poppy-E400;
+$assessment-base: $birch-violet-600;
+$assessment-hover: $birch-violet-700;
+$audit-log-base: $birch-green-600;
+$audit-log-hover: $birch-green-700;
 
 // BACKGROUND COLORS
 ////////////////////
@@ -107,7 +107,6 @@ $nav-bg: #292929;
 $examples-bg: #2f2f2f;
 $code-bg: $nav-bg;
 $code-annotation-bg: #1c1c1c;
-$nav-subitem-bg: $harvest-base;
 $nav-active-bg: $birch-white;
 $nav-active-parent-bg: $harvest-hover !default; // parent links of the current section
 $lang-select-border: #000;
@@ -115,19 +114,19 @@ $lang-select-bg: #222;
 $lang-select-active-bg: $examples-bg; // feel free to change this to blue or something
 $lang-select-pressed-bg: #111; // color of language tab bg when mouse is pressed
 $main-bg: $birch-white;
-$aside-notice-bg: #ccf0ee;
-$aside-warning-bg: #fcf5cc;
-$aside-success-bg: #b7dd79;
-$search-notice-bg: #c97a7e;
+$aside-notice-bg: $birch-green-E100;
+$aside-warning-bg: $birch-yellow-E25;
+$aside-success-bg: $birch-iris-E50;
+$search-notice-bg: $birch-poppy-E100;
 $footer-nav-items-bg: $examples-bg;
 
 // TEXT COLORS
 ////////////////////
-$main-text: #54585a !default; // main content text color
+$main-text: $birch-evergreen-700 !default; // main content text color
 $nav-text: $birch-white !default;
 $nav-active-text: $main-text !default;
 $nav-active-parent-text: $birch-white !default; // parent links of the current section
-$lang-select-text: #9b9b9b !default; // color of unselected language tab text
+$lang-select-text: $birch-evergreen-E100 !default; // color of unselected language tab text
 $lang-select-active-text: $lang-select-text !default; // color of selected language tab text
 $lang-select-pressed-text: $lang-select-text !default; // color of language tab text when mouse is pressed
 $nav-home-text: $lang-select-text;
@@ -170,7 +169,7 @@ $phone-width: $tablet-width - $nav-width !default; // min width before reverting
 
 // OTHER
 ////////////////////
-$nav-footer-border-color: #666 !default;
+$nav-footer-border-color: $birch-evergreen-E200 !default;
 $search-box-border-color: $nav-footer-border-color !default;
 
 

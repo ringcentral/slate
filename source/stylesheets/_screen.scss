@@ -590,8 +590,8 @@ html, body {
     padding: 2px;
     margin: -3px;
     border-radius: 4px;
-    border: 1px solid #F7E633;
-    background: linear-gradient(to top left, #F7E633 0%, #F1D32F 100%);
+    border: 1px solid $birch-yellow-600;
+    background: linear-gradient(to top left, $birch-yellow-600 0%, $birch-yellow-700 100%);
   }
 }
 
@@ -705,7 +705,7 @@ html, body {
 }
 
 .highlight .c, .highlight .cm, .highlight .c1, .highlight .cs {
-  color: #909090;
+  color: $birch-grey-700;
 }
 
 .highlight, .highlight .w {
@@ -714,7 +714,7 @@ html, body {
 
 .copy-clipboard {
   float: right;
-  fill: #9DAAB6;
+  fill: $birch-iris-E100;
   cursor: pointer;
   opacity: 0.4;
   height: 18px;
