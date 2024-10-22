@@ -3802,7 +3802,7 @@ This section provides a list of carrier ID and names (US and Canada) for any res
 | Virgin Mobile     | 537        |
 | WIND              | 653        |
 
-# Report Types
+# Automated Reports
 
 ## All Replies Report
 
