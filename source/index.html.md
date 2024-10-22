@@ -3801,3 +3801,137 @@ This section provides a list of carrier ID and names (US and Canada) for any res
 | Videotron         | 615        |
 | Virgin Mobile     | 537        |
 | WIND              | 653        |
+
+# Report Types
+
+## All Replies Report
+
+**Description**: The All Replies Report provides a detailed list of all replies received in response to broadcast or recurring messages sent from your account on the previous [day/week/month]. This report is designed to help users identify actionable replies, allowing them to engage with subscribers effectively and respond to any feedback or inquiries. By analyzing these replies, users can gain valuable insights into subscriber sentiment and the effectiveness of their campaigns.
+
+**Frequency**: Daily/Weekly/Monthly
+
+**Output**: .csv file
+
+**Scope**: Includes data from all lists on the account
+
+**Customization**: Users can request to append subscriber-level custom fields to the report, such as CRM IDs (e.g., cons_id from Blackbaud Luminate Online). These custom fields must be pre-configured within the list in the user's Tatango account to appear in the report.
+
+---
+
+## Broadcast Message Summary Report
+
+**Description**: The Messages Summary Report provides a [daily/weekly/monthly] summary of all broadcast messages sent from your account on the previous day. This report offers insights into message performance, including key metrics related to deliverability and engagement. Users can quickly assess how well their messages reached subscribers and gauge engagement levels, helping to inform future messaging strategies and optimize campaign effectiveness.
+
+**Frequency**: Daily/Weekly/Monthly
+
+**Output**: .csv file
+
+**Scope**: Includes data from all lists on the account
+
+**Customization**: No customization is available for this report.
+
+---
+
+## Clicks Report
+
+**Description**: The Clicks Report provides a comprehensive list of all clicks recorded from the previous [day/week/month]. This includes clicks from any broadcast or recurring message sent from your account. The report helps users track engagement at the subscriber level, providing valuable insights into campaign performance.
+
+**Frequency**: Daily/Weekly/Monthly
+
+**Output**: .csv file
+
+**Scope**: Includes data from all lists on the account
+
+**Customization**: Users can request to append subscriber-level custom fields to the report, such as CRM IDs (e.g., cons_id from Blackbaud Luminate Online). These custom fields must be pre-configured within the list in the user's Tatango account to appear in the report.
+
+---
+
+## Donations Report
+
+**Description**: The Donations Report provides a comprehensive list of all donations received and attributed to Tatango messages from the previous [day/week/month]. This report enables users to assess the direct impact of their messaging campaigns on fundraising efforts, offering insights into which messages prompted donations. By tracking donation performance, customers can better understand campaign effectiveness and refine their messaging strategies to drive further contributions.
+
+**Frequency**: Daily/Weekly/Monthly
+
+**Output**: .csv file
+
+**Scope**: Includes data from all lists on the account
+
+**Customization**: Users can request to append subscriber-level custom fields to the report, such as CRM IDs (e.g., cons_id from Blackbaud Luminate Online). These custom fields must be pre-configured within the list in the user's Tatango account to appear in the report.
+
+---
+
+## Opts Report
+
+**Description**: The Opts Report provides a comprehensive log of all opt-in and opt-out activities that occurred the previous [day/week/month]. This report gives users valuable insights into list growth, churn, and overall list health. By tracking subscriber engagement and list changes, users can better understand their audience dynamics and make informed decisions to improve subscriber retention and acquisition.
+
+**Frequency**: Daily
+
+**Output**: .csv file
+
+**Scope**: Includes data from all lists on the account
+
+**Customization**: Users can request to append subscriber-level custom fields to the report, such as CRM IDs (e.g., cons_id from Blackbaud Luminate Online). These custom fields must be pre-configured within the list in the user's Tatango account to appear in the report.
+
+---
+
+## Recipients Report
+
+**Description**: The Recipients Report provides a detailed record of all messages sent to individual subscribers from the previous day. This includes broadcast, recurring, autoresponder, system, test, and transactional messages. This report enables users to track each message campaign at the individual subscriber level, offering valuable insights into message deliverability, including whether a message was successfully delivered or bounced.
+
+**Frequency**: Daily/Weekly/Monthly
+
+**Output**: .csv file
+
+**Scope**: Includes data from all lists on the account
+
+**Customization**: Users can request to append subscriber-level custom fields to the report, such as CRM IDs (e.g., cons_id from Blackbaud Luminate Online). These custom fields must be pre-configured within the list in the user's Tatango account to appear in the report.
+
+---
+
+## Subscribers Snapshot Report
+
+**Description**: The Subscribers Snapshot Report provides a complete, point-in-time snapshot of all subscribers and their attributes. This report allows users to capture the current state of their subscriber list, including key details such as subscription status, custom fields, and engagement data points. It’s particularly useful for monitoring list health, performing historical comparisons, and tracking changes in subscriber attributes over time.
+
+**Frequency**: Daily/Weekly/Monthly
+
+**Output**: .csv file
+
+**Scope**: Includes data from all lists on the account
+
+**Customization**: No customization is available for this report.
+
+---
+
+## Updated Subscribers Report
+
+**Description**: The Updated Subscribers Report provides a detailed record of all subscribers whose information was updated during the previous [day/week/month]. This report offers valuable insights into changes in subscriber data, helping users monitor list health and track updates in subscription status. Subscribers may be included in the report due to changes in their subscription status (e.g., opt-in or opt-out) or updates to custom field attributes, such as name, email, last gift date or any other attributes configured as a custom field on your Tatango list.
+
+**Frequency**: Daily
+
+**Output**: .csv file
+
+**Scope**: Includes data from all lists on the account
+
+**Customization**: No customization is available for this report.
+
+---
+
+## Delivery Methods
+
+Reports can be automatically delivered to one or more of the following destinations: 
+- Amazon S3 (AWS)
+- Google Cloud Storage (GCP)
+- SFTP (Secure File Transfer Protocol)
+- Email: Delivered as an attachment
+
+If you have a delivery method you'd like to see added please reach out to your Customer Success Manager or [support@tatango.com](mailto:support@tatango.com).
+
+---
+
+## Example Use Case
+
+A nonprofit organization wants to track communication data in Salesforce. They log messages sent as activity records in Salesforce using the data provided by our Recipients Report. Each record from the report is logged as an activity record on each contact record in Salesforce.
+
+In order to accurately do so they add Salesforce Contact ID (bbcrm_cons_id) as a custom field on their Tatango list and upload each subscriber's constituent ID in their initial upload.
+
+The nonprofit organization consumes our Recipients Report on a daily basis to an AWS S3 bucket hosted by them. From there, they have a job that runs daily to pick up the .csv file, loop through each record, and create the activity records in Salesforce on each contact. This allows them to have a comprehensive view of texts that their contacts have received in Salesforce.
