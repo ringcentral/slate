@@ -18,7 +18,7 @@ meta:
 
 # Introduction
 
-Filmmakers provides a RESTful JSON API with token-based authentication. You can request an API key with [our support](https://www.filmmakers.eu/contact/new). The permission scope of the API key varies depending on the use case, so when contacting us be sure to specify the desired use case (e.g. you plan on using Filmmakers data for a website).
+Filmmakers provides a RESTful JSON API with OAuth and token-based authentication. You can request an API key with [our support](https://www.filmmakers.eu/contact/new). The permission scope of the API key varies depending on the use case, so when contacting us be sure to specify the desired use case (e.g. you plan on using Filmmakers data for a website).
 
 # API updates and backwards compatibility
 
@@ -36,6 +36,8 @@ If we do introduce a breaking change, we will create new endpoints with a new ve
 
 # Authentication
 
+## Token-based
+
 Once you have been issued an API key you can use the following code to authorize requests:
 
 ```shell
@@ -49,6 +51,57 @@ Filmmakers expects the API key to be included in all API requests to the server 
 
 <aside class="notice">
 You must replace <code>API_KEY</code> with your personal API key.
+</aside>
+
+## OAuth
+
+Filmmakers API supports the OAuth flow with refresh tokens.
+
+### Setting up OAuth Access
+
+Once you have been issued an API key with OAuth Authorization enabled, you can use the following configuration from your client code:
+
+[Filmmakers OpenID Configuration](https://www.filmmakers.eu/.well-known/openid-configuration)
+
+See example on how to fetch the OAuth Access Token with curl.
+
+```shell
+export CLIENT_ID="your-client-id-goes-here"
+export CLIENT_SECRET="your-client-secret-goes-here"
+curl -s -X POST "http://filmmakers.test/oauth/token" \
+           -H "Content-Type: application/x-www-form-urlencoded" \
+           --data-urlencode "grant_type=client_credentials" \
+           --data-urlencode "client_id=$CLIENT_ID" \
+           --data-urlencode "client_secret=$CLIENT_SECRET" \
+           --data-urlencode "scope=public"
+```
+
+```json
+{"access_token":"Uvm37RVcZano399REpMXh837fDT-jtSc0lTvmEexpKI","token_type":"Bearer","expires_in":7200,"scope":"public","created_at":1730119409}
+```
+
+<aside class="notice">
+You must replace <code>CLIENT_ID</code> and <code>CLIENT_SECRET</code> with your credentials.
+</aside>
+
+### Using OAuth Access Tokens
+
+Filmmakers expects the OAuth Access Token to be included in all API requests to the server in a header that looks like the following:
+
+`Authorization: Bearer ACCESS_TOKEN`
+
+OAuth Access Tokens expire in 120 minutes and have to be refreshed, your client software is responsible for automating the OAuth flow.
+
+
+```shell
+curl -I https://www.filmmakers.eu/api/v1/actor_profiles -H "Authorization: Bearer $ACCESS_TOKEN" -H "Accept: application/json"
+```
+
+```text
+HTTP/1.1 200 OK
+```
+<aside class="notice">
+You must replace <code>ACCESS_TOKEN</code> with a non-expired OAuth Access Token.
 </aside>
 
 # Cross origin resource sharing
@@ -155,6 +208,7 @@ Filmmakers uses conventional HTTP response codes to indicate the success or fail
 Certain `4xx` errors, notably the `410` Gone status, indicate that a requested resource (such as an actor_profile or a talent_agency) has been merged with another and is no longer available at the original URL. The response will include the ID of the new resource, and clients should use this ID to access the merged resource.
 
 # Changelog
+- (2024-10-28) **API**: Optional OAuth Authorization added to all endpoints<br>
 - (2024-09-26) **ActorProfile#show**: Add new fields `ethnic_background`, `ethnic_background_details` and `ethnic_background_custom`<br>
 - (2024-08-16) **ActorProfile#show**: Expose `talent_agency_connections`, which includes more details about the agency connections of a profile
 - (2024-07-01) **ActorProfile#show**: Add new field `gender_description`
