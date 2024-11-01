@@ -930,10 +930,21 @@ fetch(url, { headers })
 
 ```json
 [{
+  "values": [
+    {
+      "id": "TestField",
+      "internal_id": "ef5ed054-73de-4463-ba61-82c36aca5afc",
+      "type": "text_field",
+      "created_at": "2024-10-28T07:56:09.391398Z",
+      "updated_at": "2024-10-28T16:39:32.577794Z",
+      "value": "Test",
+      "hidden": false,
+      "display_text": "",
+    }
+  ],
   "user_id": "alice@feathery.io",
-  "last_submitted": "2020-06-01T00:00:00Z",
-  "Field1": "Test",
-  "Field2": "Test 2",
+  "submission_start": "2024-10-30T02:07:32Z",
+  "last_submitted": "2024-10-30T02:07:32Z"
 }]
 ```
 
