@@ -3385,6 +3385,21 @@ id="videos-delete">Delete a Video</h3>
       </tr>
       <tr class="text-2 border-bottom border--light-gray">
         <td>
+          <strong class="is-block text--navy">include_events</strong>
+          <span class="is-block text--transparent text-3">integer</span>
+          <span class="text--transparent text-3">optional</span>
+        </td>
+        <td>
+          <p>A Boolean value that determines whether to include Vimeo events in the response.</p>
+          <ul>
+            <li><code>1</code>: Include events.</li>
+            <li><code>0</code>: Exclude events.</li>
+          </ul>
+          <p>Vimeo events are excluded if you omit this parameter.</p>
+        </td>
+      </tr>
+      <tr class="text-2 border-bottom border--light-gray">
+        <td>
           <strong class="is-block text--navy">sort</strong>
           <span class="is-block text--transparent text-3">string</span>
           <span class="text--transparent text-3">optional</span>
