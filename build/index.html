@@ -2257,6 +2257,214 @@ id="videos-delete">Delete a Video</h3>
   </tbody>
 </table>
 
+
+<!-- ___LIVE_EVENTS____________________________ -->
+
+<h2 class="head-3 margin-top-xlarge padding-top-xlarge border-top margin-bottom-medium" id="live-events">Live Events</h2>
+
+<section class="text-2 contain">
+  <p>A live event represents a Vimeo event on Vimeo.com.</p>
+  <p>Live events have many videos, with the latest video being the current or upcoming stream. Past videos are live archives. Information related to current or upcoming stream should be retrieved from the videos endpoint provided under <code>_links.latest_video.href</code></p>
+</section>
+
+<h3 class="text-2 head-4 text--navy text--bold is-api margin-top-large margin-bottom-medium" id="live-events-get">Retrieve a live event</h3>
+
+<blockquote>
+<h5 class="head-5 text--white margin-bottom-medium">Retrieve a Live Event</h5>
+
+<p>Definition</p>
+</blockquote>
+<pre class="highlight shell"><code>GET /live_events/:id
+</code></pre>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="gp">$ </span>curl -X GET <span class="s2">"https://api.vhx.tv/live_events/1"</span> <span class="se">\</span>
+  -u o3g_4jLU-rxHpc9rsoh3DHfpsq1L6oyM:
+</code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="p">}</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://subdomain.vhx.tv/live_events/1"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"live_event_page"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://subdomain.vhx.tv/events/event_name"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"latest_video"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.vhx.tv/videos/1"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Live Event"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Live Event"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My live event description"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"short_description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My short description"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"live_event"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"thumbnail"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"small"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://cdn.vhx.tv/assets/thumbnails/default-medium.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"medium"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://cdn.vhx.tv/assets/thumbnails/default-medium.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"large"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://cdn.vhx.tv/assets/thumbnails/default-medium.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"source"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://cdn.vhx.tv/assets/thumbnails/default-medium.png"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"blurred"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://cdn.vhx.tv/assets/thumbnails/default-medium.png"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"plans"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="p">]</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-01-30T23:44:19Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-02-10T23:49:30Z"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"canonical_collection_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"product_ids"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="mi">1</span><span class="w">
+  </span><span class="p">]</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"geo_available"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"geo_unavailable"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="p">}</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"live_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"media_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"live_sporting_event"</span><span class="w">
+<span class="p">}</span>
+</code></pre>
+
+<section class="text-2 contain">
+  <p>Retrieves an existing live event.</p>
+</section>
+
+<table>
+  <thead>
+    <tr class="text-2">
+      <th class="padding-medium nowrap">Arguments</th>
+      <th class="padding-medium" width="100%">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr class="text-2 border-bottom border--light-gray">
+      <td>
+        <strong class="is-block text--navy">id</strong>
+        <span class="is-block text--transparent text-3">string</span>
+        <span class="text--yellow text-3">REQUIRED</span>
+      </td>
+      <td>The <code>id</code> of the live event being retrieved.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="text-2 head-4 text--navy text--bold is-api margin-top-large margin-bottom-medium" id="live-events-list">List all Live Events</h3>
+
+<blockquote>
+<h5 class="head-5 text--white margin-bottom-medium">List all Live Events</h5>
+
+<p>Definition</p>
+</blockquote>
+<pre class="highlight shell"><code>GET /live_events
+</code></pre>
+
+<blockquote>
+<p>Example Request</p>
+</blockquote>
+<pre class="highlight shell"><code><span class="gp">$ </span>curl -X GET -G <span class="s2">"https://api.vhx.tv/live_events?product=1"</span> <span class="se">\</span>
+  -u o3g_4jLU-rxHpc9rsoh3DHfpsq1L6oyM:
+</code></pre>
+
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"_links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"self"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.vhx.tv/live_events?product=https%3A%2F%2Fapi.vhx.tv%2Fproducts%2F6&amp;page=1&amp;per_page=50"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"first"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.vhx.tv/live_events?product=https%3A%2F%2Fapi.vhx.tv%2Fproducts%2F6&amp;page=1&amp;per_page=50"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"prev"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"next"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.vhx.tv/live_events?product=https%3A%2F%2Fapi.vhx.tv%2Fproducts%2F6&amp;page=2"</span><span class="w"> </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"last"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"href"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.vhx.tv/live_events?product=https%3A%2F%2Fapi.vhx.tv%2Fproducts%2F6&amp;page=5"</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nt">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"_embedded"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"live_events"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+<span class="p">}</span>
+</code></pre>
+
+<section class="text-2 contain">
+  <p>Live events matching the options are returned. The response is always paginated.</p>
+  <p>Pass arguements as query parameters in the request URL.</p>
+</section>
+
+<table>
+  <thead>
+    <tr class="text-2">
+      <th class="padding-medium nowrap">Arguments</th>
+      <th class="padding-medium" width="100%">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr class="text-2 border-bottom border--light-gray">
+      <td>
+        <strong class="is-block text--navy">product</strong>
+        <span class="text--yellow text-3">REQUIRED</span>
+        <span class="text--transparent text-3">string</span>
+      </td>
+      <td>
+        <p>The identifier for the SVOD or TVOD product the live events are associated with. Can be either a <code>url</code> or <code>id</code>.</p>
+        <p>For example:</p>
+        <ul>
+          <li><code>product=https://api.vhx.tv/products/1</code></li>
+          <li><code>product=1</code></li>
+        </ul>
+      </td>
+    </tr>
+    <tr class="text-2 border-bottom border--light-gray">
+      <td>
+        <strong class="is-block text--navy">query</strong>
+        <span class="is-block text--transparent text-3">string</span>
+        <span class="text--transparent text-3">optional</span>
+      </td>
+      <td>The query to search and filter the paginated results.</td>
+    </tr>
+    <tr class="text-2 border-bottom border--light-gray">
+      <td>
+        <strong class="is-block text--navy">plan</strong>
+        <span class="is-block text--transparent text-3">string</span>
+        <span class="text--transparent text-3">optional</span>
+      </td>
+      <td>
+        The plan(s) to filter the paginated results. The value can be an array or comma separated string.
+      </td>
+    </tr>
+    <tr class="text-2 border-bottom border--light-gray">
+      <td>
+        <strong class="is-block text--navy">sort</strong>
+        <span class="is-block text--transparent text-3">string</span>
+        <span class="text--transparent text-3">optional</span>
+      </td>
+      <td>The sort to order the results. Options are <code>alphabetical</code>, <code>newest</code>, <code>oldest</code>, <code>plays</code>, <code>finishes</code>, or <code>duration</code>.</td>
+    </tr>
+    <tr class="text-2 border-bottom border--light-gray">
+      <td>
+        <strong class="is-block text--navy">page</strong>
+        <span class="is-block text--transparent text-3">integer</span>
+        <span class="text--transparent text-3">optional, default is 1</span>
+      </td>
+      <td>The page number of the paginated result.</td>
+    </tr>
+    <tr class="text-2 border-bottom border--light-gray">
+      <td>
+        <strong class="is-block text--navy">per_page</strong>
+        <span class="is-block text--transparent text-3">integer</span>
+        <span class="text--transparent text-3">optional, default is 50</span>
+      </td>
+      <td>The page size of the paginated result.</td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="text-2 contain">
+  <strong class="block margin-top-large">Response</strong>
+  <p>The <code>_embedded.live_events</code> array objects match the structure returned from retrieving a single live event.</p>
+</section>
+
             <!-- ___Comments____________________________ -->
 
 <h2 class="head-3 margin-top-xlarge padding-top-xlarge border-top margin-bottom-medium" id="comments">Comments</h2>
