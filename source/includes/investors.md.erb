@@ -1816,6 +1816,10 @@ Content-Type: application/json
 ```
 ### Description
 Lists transfers out for the investor.
+
+The `activeOnly` parameter takes a `true` or `false` value (if not provided behaviour will be `false`).
+When set to `true` only Transfers Out where `dateFundsTransferred` is `null` will be returned.
+
 ### Response
 | Name                                                 | Type    | Description                                                                                                                                                                                        |
 | ---------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
