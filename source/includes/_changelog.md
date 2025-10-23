@@ -1,5 +1,8 @@
 # Changelog
 
+## 23.10.25
+1. Increased API signature validity window from 5s to 10s to reduce time sync issues.
+
 ## 08.10.25
 1. Added new websocket authentication method, {"type":"key-auth"}, which includes new formats of request and responses.  
 2. Previous websocket authentication method, {"type":"auth"}, is now marked as deprecated. This method will stop working after 31st December 2025, users are requested to migrate to the newer websocket authentication.
