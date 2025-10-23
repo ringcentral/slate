@@ -1,5 +1,8 @@
 # Changelog
 
+## 23.10.25
+1. Increased API signature validity window from 5s to 10s to reduce time sync issues.
+
 ## 21.03.25
 1. Better documentation for Websocket public channel 'candlesticks', now clearly states even Mark Price candles can be fetched.
 2. /positions REST API fixed documentation for query parameters.
