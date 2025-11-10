@@ -128,6 +128,12 @@ curl -H "Content-Type:application/json" \
 -X POST https://api.practitest.com/api/v2/projects/4566/tests.json \
 -d '{"data": { "type": "tests", "attributes": {"name": "one", "author-id": "2", "test-type": "ApiTest", "automated-fields": {"automated_test_design": "Test one design"}}  } }'
 
+# create an automated xBot test with automated fields
+curl -H "Content-Type:application/json" \
+-u YOUR_EMAIL:YOUR_TOKEN \
+-X POST https://api.practitest.com/api/v2/projects/4566/tests.json \
+-d '{"data": { "type": "tests", "attributes": {"name": "xBot automated test - Win", "author-id": "2", "test-type": "xBotTest", "automated-fields": {"automated_test_design": "xBot test design", "num_of_results": 3, "client_type": "xbot_win", "script_path": "C:/Users/Administrator/Documents/regression-automation/FullSuiteExecute.bat", "results_path": "C:/Users/Administrator/Documents/regression-automation/TheZipArchive"}}  } }'
+
 # create a BDD test with scenario field
 curl -H "Content-Type:application/json" \
 -u YOUR_EMAIL:YOUR_TOKEN \
@@ -259,6 +265,11 @@ curl -H "Content-Type:application/json" \
 -X PUT https://api.practitest.com/api/v2/projects/4566/tests/98019.json \
 -d '{"data": { "type": "tests", "attributes": {"version": "1.5", "custom-fields": { "---f-45390": "Chrome"}}  } }'
 
+# update an xBot test with automated fields
+curl -H "Content-Type:application/json" \
+-u YOUR_EMAIL:YOUR_TOKEN  \
+-X PUT https://api.practitest.com/api/v2/projects/4566/tests/98019.json \
+-d '{"data": { "type": "tests", "attributes": {"test-type": "xBotTest", "automated-fields": {"automated_test_design": "Updated xBot test design", "num_of_results": 5, "client_type": "xbot_win_new", "script_path": "C:/Users/Administrator/Documents/regression-automation/UpdatedSuiteExecute.bat", "results_path": "C:/Users/Administrator/Documents/regression-automation/UpdatedZipArchive"}}  } }'
 ```
 
 ```json
