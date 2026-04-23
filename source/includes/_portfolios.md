@@ -200,3 +200,118 @@ curl https://api.allphins.com/api/v1/portfolios/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
 | Parameter | Description                         |
 | --------- | ----------------------------------- |
 | `id`      | The ID of the portfolio to retrieve |
+
+## Get EDM analytics for a portfolio
+
+This endpoint returns EDM analytics for a portfolio, with an optional comparison against another portfolio. Results can be returned either as a single table or as a multi-dimensional matrix, depending on the `view` parameter.
+
+Each response contains three keys:
+
+- `current`: analytics for the requested portfolio.
+- `comparison`: analytics for the `comparison_portfolio_id` (or `null` if not provided).
+- `variation`: variation between `current` and `comparison` (or `null` if no comparison).
+
+```shell
+curl https://api.allphins.com/api/v1/portfolios/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/edm_analytics/ \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+  -d '{"view":"table","split":"country","filters":[],"comparison_portfolio_id":null}'
+```
+
+> Table view response:
+
+```json
+{
+  "current": {
+    "data": [
+      {"split": "US", "tiv": 1500000, "count": 120},
+      {"split": "FR", "tiv": 500000, "count": 40}
+    ]
+  },
+  "comparison": null,
+  "variation": null
+}
+```
+
+> Matrix view response:
+
+```json
+{
+  "current": {
+    "attachment_point_1": [
+      {"split": "US", "tiv": 1000000, "count": 80}
+    ],
+    "attachment_point_2": [
+      {"split": "FR", "tiv": 500000, "count": 40}
+    ]
+  },
+  "comparison": null,
+  "variation": null
+}
+```
+
+### HTTP Request
+
+`POST https://api.allphins.com/api/v1/portfolios/:id/edm_analytics/`
+
+### URL Parameters
+
+| Parameter | Description                      |
+|-----------|----------------------------------|
+| `id`      | The ID of the portfolio (UUID).  |
+
+### Payload
+
+| Parameter                 | Type         | Required | Description                                                                                 |
+|---------------------------|--------------|----------|---------------------------------------------------------------------------------------------|
+| `view`                    | _string_     | Yes      | Output format: `table` or `matrix`.                                                         |
+| `split`                   | _string_     | Yes      | Dimension used to split rows. Allowed values depend on `view` (see tables below).           |
+| `filters`                 | _list[dict]_ | Yes      | List of filters to apply to the analytics query. Pass `[]` for no filter.                   |
+| `comparison_portfolio_id` | _UUID_       | No       | Portfolio to compare against. If set, `comparison` and `variation` are populated.           |
+
+### Allowed `split` values for `view=table`
+
+`attachment_point`, `country`, `state`, `county`, `city`, `occupancy`, `geo_resolution`, `distance_to_shore`, `loss_type`, `peril`, `region`, `construction_material_building`, `construction_material_others`, `year_built`, `asset_match`, `exposure_set`.
+
+### Allowed `split` values for `view=matrix`
+
+`attachment_point`, `geo_resolution`, `location_enrichment_details`.
+
+<aside class="notice">
+If the user's group is not enabled to read EDM analytics, the endpoint returns empty lists for <code>current</code>, <code>comparison</code> and <code>variation</code>.
+</aside>
+
+## Compute aggregation analytics
+
+Cross-portfolio analytics aggregated from the current group's risks. Returns a cedant-level aggregation sliced by a configurable `split` dimension, scoped to the policies supplied in the body.
+
+```shell
+curl "https://api.allphins.com/api/v1/analytics/?view=table&split=country&in_force_date=2024-01-01" \
+  -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer YOUR_ACCESS_TOKEN' \
+  -d '{"policies":[1234,1235]}'
+```
+
+### HTTP Request
+
+`POST https://api.allphins.com/api/v1/analytics/`
+
+### Query Parameters
+
+| Parameter                 | Type     | Required | Description                                                                 |
+|---------------------------|----------|----------|-----------------------------------------------------------------------------|
+| `view`                    | _string_ | Yes      | Output view (e.g. `table`, `matrix`).                                       |
+| `split`                   | _string_ | No       | Split dimension (default `attachment_point`).                               |
+| `in_force_date`           | _string_ | Yes      | In-force date (`YYYY-MM-DD`).                                               |
+| `filters`                 | _list_   | No       | Filters applied via attribute filter backend.                               |
+| `comparison_portfolio_id` | _UUID_   | No       | Optional portfolio to compare against.                                      |
+
+### Payload
+
+| Parameter  | Type         | Required | Description                                         |
+|------------|--------------|----------|-----------------------------------------------------|
+| `policies` | _list[int]_  | No       | Policy IDs to scope the aggregation (default `[]`). |
+
+Response shape depends on `view`. See `POST /portfolios/:id/edm_analytics/` above for representative `table` / `matrix` examples.

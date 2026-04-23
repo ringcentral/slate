@@ -15,6 +15,23 @@ includes:
   - exposures
   - scenarios
   - assets
+  - clients
+  - claims
+  - shapes
+  - labels
+  - tags
+  - events
+  - scenario_list_sections
+  - attributes
+  - datasources
+  - customer_assets
+  - customer_entities
+  - maps
+  - currency
+  - reports
+  - notifications
+  - structure
+  - stats
   - errors
 
 search: true
