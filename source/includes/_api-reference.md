@@ -138,20 +138,85 @@ Response Code | Meaning
 
 When we make backwards-incompatible changes to the API, we release new versions. The current version is **v2** and can be determined with our API base path **/api/v2/**. Read our [Intelex platform release notes](https://community.intelex.com/library/knowledgebase/release-notes) to see our API changelog.
 
-## API Rate Limiting / Quotas
-To ensure Intelex Platform is reliable and has the expected performance for all users, we limit the number of API calls an API user (or application) can make within a given time period. If the limit is exceeded, the API user may be throttled and subsequent requests will be rejected, returning HTTP response code 429 Too Many Requests. In such cases it is the responsibility of the client application to implement appropriate retry logic for requests that are rejected due to rate limiting.
+## Intended Use
 
-### Limit
-The Intelex Platform API Rate limit is **6 requests per second**.
+The Intelex API is designed for system integrations that operate at the pace of human activity, such as syncing records between systems, pulling reports, and connecting workflows.
+
+It is not designed for AI chatbots, autonomous agents, or automated systems that generate records at high volume. One example is a computer-vision feed that continuously creates observations.
+
+This matters for two reasons:
+
+* **Platform performance.** High-volume automated traffic can affect performance for every user on the platform.
+* **Data quality.** Records created at machine scale can distort the reporting and analytics your programme relies on. A single event captured hundreds of times by a camera looks very different in your data from the same event reported once by a person.
+
+If you have, or are planning, an integration that involves AI agents, automated record creation, or high-volume data extraction, see [AI Agents and Automated Integrations](#ai-agents-and-automated-integrations) and talk to us before you build it.
+
+## API Rate Limiting / Quotas
+To keep the Intelex Platform reliable and performing as expected for all users, we limit the number of API calls that can be made within a given time period. If a limit is exceeded, subsequent requests are rejected with HTTP response code 429 Too Many Requests. The client application is responsible for implementing retry logic for requests that are rejected due to rate limiting.
+
+### Limits
+
+Limits are applied by operation type. Each operation type has a rate limit and a daily cap.
+
+Operation | Rate limit | Daily cap
+---------- | ------- | -------
+Read (GET) | 20 per second | 20,000
+Update (PATCH) | 4 per second | 4,000
+Create (POST) | 2 per second | 2,000
+Delete (DELETE) | 2 per second | 2,000
+Workflow actions | 2 per second | 2,000
+Attachments (file upload) | 12 per minute | 200
+Reports (per page of results) | 6 per minute | 100
+
+Daily caps reset every 24 hours.
+
+<aside class="notice">
+The per-second rate limits are a shared budget, not separate allowances. You can make <b>20 reads or 2 creates</b> in a second, not 20 reads and 2 creates. Combining operations uses up the same budget: for example, 10 reads and 1 create in the same second reaches the limit.
+</aside>
+
+### How requests are counted
+
+* **Per tenant.** Limits apply to your whole Intelex tenant, whether you run one integration or several. All integrations and users in the tenant share the same limits.
+* **Batch requests.** Each operation inside a [batch request](#object-batch-requests) counts against the limits individually. A `$batch` request that contains 10 creates counts as 10 creates, not 1 request.
+* **Reports.** Each page of report results counts as one report request.
+
+### Integration users
+
+Use a dedicated integration user for integrations, not an individual user's account. Lower limits apply to requests made with individual user accounts, for example a person connecting an AI assistant such as Claude or ChatGPT to the API with their own credentials.
+
+### Exceptions
+
+The following are not counted towards these limits:
+
+* **Officially supported integrations.** Integrations that Intelex officially supports, such as 3E and Enhesa.
+* **Initial data import.** The initial import of data for new customers. Talk to your Intelex contact to plan your import.
 
 ### Quota headers
 Quota details may be passed back to the API user/application via response headers.
 
-Header | Description | Sample value
----------- | ------- | -------
-Retry-After	| Time in seconds to wait before retrying the request after rate limit is exceeded. | 600
+Header | Description
+---------- | -------
+Retry-After	| Time in seconds to wait before retrying the request after a rate limit or daily cap is exceeded. The value is set dynamically based on current usage, so always read it from the response rather than using a fixed wait time.
 
 ### Best Practices
 
 * Use HTTP clients that support automatic retries with an exponential back-off strategy when receiving 429 (Too Many Requests) responses.
 * Avoid spikes of traffic by spreading out API calls over time wherever possible.
+* Request only the data you need. Use filtering and field selection rather than repeatedly reading full record sets.
+* Track your daily usage so that scheduled jobs do not reach a daily cap partway through a run.
+
+## AI Agents and Automated Integrations
+
+The Intelex API was built for system integrations operating at the pace of human activity. It was not designed for AI chatbots, autonomous agents, or automated systems that create records at high volume, such as computer-vision feeds that create observations continuously.
+
+High-volume automated traffic can affect platform performance for everyone. Records created at machine scale can also distort your reporting and analytics: a single event captured hundreds of times by a camera looks very different in your data from the same event reported once by a person.
+
+If you have, or are planning, an integration that involves AI agents, automated record creation, or high-volume data extraction:
+
+* **Talk to us before you build it.** We want to support these use cases, and we can help you design them so they work reliably and keep your data meaningful. Your Customer Success Manager is the best starting point.
+* **Use an integration user.** Do not connect AI assistants or agents using an individual user's credentials. Lower limits apply to individual user accounts.
+* **Stay within the limits.** AI agents and automated systems are subject to the same [rate limits and daily caps](#api-rate-limiting-quotas) as any other integration.
+
+<aside class="notice">
+Intelex is working on a Model Context Protocol (MCP) server for connecting AI assistants and agents to the Intelex Platform. It is not available today.
+</aside>

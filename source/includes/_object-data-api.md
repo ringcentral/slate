@@ -2313,3 +2313,5 @@ The end of the change set must contain a termination indicator like the followin
 ##### Batch Limits
 
 The Batch service has its limits.  The maximum number of operations or changesets that can be included in the body of a $batch request is 100. The maximum number of operations inside a changeset is 1000. The size of the payload for a $batch request cannot exceed 1MB.
+
+Each operation inside a $batch request counts individually against the [API rate limits and daily caps](#api-rate-limiting-quotas).
