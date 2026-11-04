@@ -10,6 +10,8 @@ toc_footers:
 
 You can use the GraphQL API as an affiliate partner to ingest publication data for all retailers that have subscribed to your reach channel.
 
+Retailers can also use it to read their own publications, for example when moving from REST API v1. See [Migrate from API v1](migrate-from-v1.html).
+
 # Getting Started
 
 ## The GraphQL endpoint
