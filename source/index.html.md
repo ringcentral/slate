@@ -198,7 +198,7 @@ You can use this URL to link to this publication or embed it within your website
 
 A REST API for retailers to automate their workflows from creation to. The current version is v2, but v1 is still supported. Please build all new integrations using version 2
 
-[REST API v1 documentation](rest-v1.html)
+[REST API v1 documentation](rest-v1.html) (stops working on [DATE]; see [Migrate from API v1](migrate-from-v1.html))
 
 [REST API v2 documentation](rest-v2.html)
 
