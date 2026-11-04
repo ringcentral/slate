@@ -13,6 +13,8 @@ search: false
 
 # REST API v1
 
+<aside class="warning">API v1 stops working on [DATE]. Move to the GraphQL API before then: the <a href="migrate-from-v1.html">migration guide</a> shows the query that replaces each call.</aside>
+
 This API can be used to retrieve publication data for usage in mobile apps, sites and other integrations.
 
 ### Authentication
